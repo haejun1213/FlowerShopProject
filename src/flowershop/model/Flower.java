@@ -67,4 +67,7 @@ public class Flower {
 	}
 
 
+	public String toString() {
+		return getFlowerID() + ", " + getType() + ", " + getName() + ", " + getColor() + ", " + getPrice() + "원";
+}
 }

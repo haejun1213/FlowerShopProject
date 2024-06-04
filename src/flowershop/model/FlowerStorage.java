@@ -6,6 +6,12 @@ import java.util.stream.Collectors;
 
 public class FlowerStorage {
 
+	private String[] typeMenuList = { "0. 뒤로가기", "1. 꽃다발", "2. 꽃바구니", "3. 꽃화병", "4. 플라워박스" };
+	
+	private String[] colorMenuList = {"0. 뒤로가기", "1. 레드", "2. 핑크", "3. 노랑", "4. 화이트", "5. 보라", "6. 믹스"};
+
+	final int MAX_QUANTITIY = 10;
+	
 	ArrayList<Flower> flowerList = new ArrayList<>();
 	
 	private int flowerLastID = 1000;
@@ -17,21 +23,60 @@ public class FlowerStorage {
 		flowerList.add(new Flower(flowerLastID++, "꽃다발", "Spring violet - 보라빛 봄빛 햇살", new String[] {"장미, 거베라, 스토크"}, "보라", 49000));
 		flowerList.add(new Flower(flowerLastID++, "꽃바구니", "Be my love - Glory", new String[] {"장미"}, "핑크", 63000));
 		flowerList.add(new Flower(flowerLastID++, "꽃바구니", "Lovely sweet II - White blossom", new String[] {"장미"}, "핑크", 240000));
-		flowerList.add(new Flower(flowerLastID++, "꽃화병", "Beautiful colors - innocence", new String[] {"백합"}, "핑크", 135000));
+		flowerList.add(new Flower(flowerLastID++, "꽃화병", "Beautiful colors - innocence", new String[] {"백합"}, "화이트", 135000));
 		flowerList.add(new Flower(flowerLastID++, "꽃화병", "Great Season", new String[] {"아네모네, 씨드유카리"}, "보라", 135000));
 		
 	}
 	
 	//종류
-	public List<Flower> getFlowersByType(String type) {
+	public List<Flower> getFlowersByType(int i) {
 		return flowerList.stream()
-			.filter(flower -> flower.getType().equals(type))
+			.filter(flower -> flower.getType().equals(getTypeMenuList()[i].substring(3, getTypeMenuList()[i].length())))
 			.collect(Collectors.toList());
 	}
 	
-	public List<Flower> getFlowersByColor(String color) {
+	public List<Flower> getFlowersByColor(int i) {
 		return flowerList.stream()
-			.filter(flower -> flower.getColor().equals(color))
+			.filter(flower -> flower.getColor().equals(getColorMenuList()[i].substring(3, getColorMenuList()[i].length())))
 			.collect(Collectors.toList());
+	}
+
+	public String[] getTypeMenuList() {
+		return typeMenuList;
+	}
+
+	public void setTypeMenuList(String[] typeMenuList) {
+		this.typeMenuList = typeMenuList;
+	}
+
+	public String[] getColorMenuList() {
+		return colorMenuList;
+	}
+
+	public void setColorMenuList(String[] colorMenuList) {
+		this.colorMenuList = colorMenuList;
+	}
+
+	public boolean isValidFlower(int flowerID) {
+		for (Flower flower : flowerList) {
+			if (flower.getFlowerID() == flowerID)
+				return true;
+		}
+
+		return false;
+	}
+
+	public Flower getFlowerID(int flowerID) {
+		for (Flower flower : flowerList) {
+			if (flower.getFlowerID() == flowerID)
+				return flower;
+		}
+
+		return null;
+	}
+	
+	public int getMaxQuantitiy() {
+		// TODO Auto-generated method stub
+		return MAX_QUANTITIY;
 	}
 }

@@ -12,10 +12,8 @@ public class FlowerShopController {
 	FlowerStorage flowerStorage;
 	ConsoleView view;
 	Cart cart;
-	
-	String[] colorMenuList = {"0. 뒤로가기", "1. 레드", "2. 핑크", "3. 노랑", "4. 화이트", "5. 보라", "6. 믹스"};
 
-	String[] typeMenuList = { "0. 뒤로가기", "1. 꽃다발", "2. 꽃바구니", "3. 꽃화병", "4. 플라워박스" };
+	String[] searchMenu = { "0. 돌아가기", "1. 색상 검색", "2. 가격 검색" };
 
 	String[] customerMenuList = { "0. 종료", "1. 꽃 목록 보기", "2. 꽃 검색", "3. 장바구니 보기", "4. 장바구니에 꽃 담기", "5. 장바구니 꽃 삭제",
 			"6. 장바구니 꽃 수량 변경", "7. 장바구니 비우기", "8. 주문", "9. 관리자 모드" };
@@ -72,96 +70,139 @@ public class FlowerShopController {
 
 		do {
 
-			menu = view.selectMenuNum(typeMenuList);
+			menu = view.selectMenuNum(flowerStorage.getTypeMenuList());
 
 			switch (menu) {
 
-			case 1 -> viewFlowerInfoType(typeMenuList[1].substring(3, typeMenuList[1].length()));
+			case 1 -> viewFlowerInfoType(1);
 
-			case 2 -> viewFlowerInfoType(typeMenuList[2].substring(3, typeMenuList[2].length()));
+			case 2 -> viewFlowerInfoType(2);
 
-			case 3 -> viewFlowerInfoType(typeMenuList[3].substring(3, typeMenuList[3].length()));
+			case 3 -> viewFlowerInfoType(3);
 
-			case 4 -> viewFlowerInfoType(typeMenuList[4].substring(3, typeMenuList[4].length()));
+			case 4 -> viewFlowerInfoType(4);
 
-			case 0 -> end();
+			case 0 -> quit();
 
 			}
 			return;
 
 		} while (menu != 0);
 	}
-	
-	
-	
-	private void viewFlowerInfoType(String type) {
-		List<Flower> flowers = flowerStorage.getFlowersByType(type);
+
+	private void viewFlowerInfoType(int i) {
+		List<Flower> flowers = flowerStorage.getFlowersByType(i);
 		view.displayFlowerList(flowers);
 	}
-	
-	private void viewFlowerInfoColor(String color) {
-		List<Flower> flowers = flowerStorage.getFlowersByColor(color);
-		view.displayFlowerList(flowers);
-	}
-	
-	
+
 	private void sreachFlowerInfo() {
+
+		int menu;
+
+		menu = view.selectMenuNum(searchMenu);
+
+		do {
+
+			switch (menu) {
+
+			case 1 -> searchFlowerColor();
+
+			case 2 -> System.out.println("돈보단 마음이 중요합니다.");// searchFlowerPrice();
+
+			case 0 -> quit();
+			}
+			return;
+
+		} while (menu != 0);
+
+	}
+
+	private void searchFlowerColor() {
 
 		int menu;
 
 		do {
 
-			menu = view.selectMenuNum(colorMenuList);
+			menu = view.selectMenuNum(flowerStorage.getColorMenuList());
 
 			switch (menu) {
 
-			case 1 -> viewFlowerInfoColor(colorMenuList[1].substring(3, typeMenuList[1].length()));
+			case 1 -> viewFlowerInfoColor(1);
 
-			case 2 -> viewFlowerInfoColor
+			case 2 -> viewFlowerInfoColor(2);
 
-			case 3 -> viewFlowerInfoColor
+			case 3 -> viewFlowerInfoColor(3);
 
-			case 4 -> viewFlowerInfoColor
+			case 4 -> viewFlowerInfoColor(4);
 
-			case 5 -> viewFlowerInfoColor
+			case 5 -> viewFlowerInfoColor(5);
 
-			case 6 -> viewFlowerInfoColor
+			case 6 -> viewFlowerInfoColor(6);
 
-			case 0 -> end();
+			case 0 -> quit();
 
 			}
+			return;
 
 		} while (menu != 0);
-
-	}
-		
-		
-	
 	}
 
-	private Object viewCart() {
-		// TODO Auto-generated method stub
-		return null;
+	private void viewFlowerInfoColor(int i) {
+		List<Flower> flowers = flowerStorage.getFlowersByColor(i);
+		view.displayFlowerList(flowers);
 	}
 
-	private Object addFlower2Cart() {
-		// TODO Auto-generated method stub
-		return null;
+	private void viewCart() {
+		view.displayCart(cart);
 	}
 
-	private Object deleteFlowerInCart() {
-		// TODO Auto-generated method stub
-		return null;
+	private void addFlower2Cart() {
+//		view.displayFlowerInfo(flowerStorage);
+		Flower flower = flowerStorage.getFlowerID(view.selectFLowerID(flowerStorage));
+		cart.addItem(flower);
+		view.displayFlowerInfo(flower);
+		view.showMessage(">> 장바구니에 꽃을 추가하였습니다.");
 	}
 
-	private Object updateFlowerInCart() {
-		// TODO Auto-generated method stub
-		return null;
+	private void deleteFlowerInCart() {
+		view.displayCart(cart);
+		if (!cart.isEmpty()) {
+			// 도서 ID 입력받기
+			int flowerID = view.selectFlowerID(cart);
+			if (view.askConfirm(">> 해당 상품을 삭제하려면 \"yes\"를 입력하세요 : ", "yes")) {
+				// 해당 도서 ID의 cartItem삭제
+				cart.deleteItem(flowerID);
+				view.showMessage(">> 해당 상품을 삭제했습니다.");
+			} else {
+				view.showMessage(">> 해당 상품을 삭제하지 않았습니다.");
+			}
+		}
 	}
 
-	private Object resetCart() {
-		// TODO Auto-generated method stub
-		return null;
+	private void updateFlowerInCart() {
+		view.displayCart(cart);
+
+		if (!cart.isEmpty()) {
+			// 도서 ID 입력받기
+			int flowerID = view.selectFlowerID(cart);
+			// 수량 입력 받기
+			int quantity = view.inputNumber(0, flowerStorage.getMaxQuantitiy());
+			// 도서 ID에 해당하는 cartItem 가져옴
+			cart.updateQuantity(flowerID, quantity);
+			view.showMessage(">> 해당 상품의 수량을 변경하였습니다.");
+		}
+	}
+
+	private void resetCart() {
+		view.displayCart(cart);
+		if (!cart.isEmpty()) {
+			if (view.askConfirm(">> 장바구니를 비우시려면 \"yes\"를 입력하세요 : ", "yes")) {
+				cart.resetCart();
+				view.showMessage(">> 장바구니를 비웠습니다.");
+			} else {
+				view.showMessage(">> 장바구니를 비우지 않았습니다.");
+			}
+		}
 	}
 
 	private Object order() {
@@ -174,8 +215,11 @@ public class FlowerShopController {
 		return null;
 	}
 
-	private Object end() {
-		// TODO Auto-generated method stub
-		return null;
+	private void quit() {
+
+	}
+
+	private void end() {
+		view.showMessage("🌼 𝑪𝒍𝒐𝒔𝒆 𝒕𝒉𝒆 𝑯𝒂𝒆𝒋𝒖𝒏'𝒔 𝑭𝒍𝒐𝒘𝒆𝒓 𝑺𝒉𝒐𝒑 🌼");
 	}
 }
