@@ -2,16 +2,24 @@ package flowershop.controller;
 
 import java.util.List;
 
+import flowershop.model.Admin;
 import flowershop.model.Cart;
+import flowershop.model.Customer;
 import flowershop.model.Flower;
 import flowershop.model.FlowerStorage;
 import flowershop.view.ConsoleView;
 
 public class FlowerShopController {
-
+	
 	FlowerStorage flowerStorage;
 	ConsoleView view;
 	Cart cart;
+	Customer customer;
+	Admin admin;
+	
+	String[] adminMenuList = { "0. 종료", "1. 꽃 정보 추가", "2. 꽃 정보 삭제", "3. 꽃 정보 파일 저장" };
+	
+	String[] orderMenuList = {"0. 돌아가기", "1. 주문 정보 추가 및 수정", "2. 주문하기"};
 
 	String[] searchMenu = { "0. 돌아가기", "1. 색상 검색", "2. 가격 검색" };
 
@@ -23,6 +31,8 @@ public class FlowerShopController {
 		this.flowerStorage = flowerStorage;
 		this.cart = cart;
 		this.view = view;
+		customer = new Customer();
+		admin = new Admin();
 
 	}
 
@@ -52,7 +62,7 @@ public class FlowerShopController {
 
 			case 7 -> resetCart();
 
-			case 8 -> order();
+			case 8 -> orderMenu();
 
 			case 9 -> adminMode();
 
@@ -157,8 +167,7 @@ public class FlowerShopController {
 	}
 
 	private void addFlower2Cart() {
-//		view.displayFlowerInfo(flowerStorage);
-		Flower flower = flowerStorage.getFlowerID(view.selectFLowerID(flowerStorage));
+		Flower flower = flowerStorage.getFlowerID(view.selectFlowerID(flowerStorage));
 		cart.addItem(flower);
 		view.displayFlowerInfo(flower);
 		view.showMessage(">> 장바구니에 꽃을 추가하였습니다.");
@@ -167,10 +176,8 @@ public class FlowerShopController {
 	private void deleteFlowerInCart() {
 		view.displayCart(cart);
 		if (!cart.isEmpty()) {
-			// 도서 ID 입력받기
 			int flowerID = view.selectFlowerID(cart);
 			if (view.askConfirm(">> 해당 상품을 삭제하려면 \"yes\"를 입력하세요 : ", "yes")) {
-				// 해당 도서 ID의 cartItem삭제
 				cart.deleteItem(flowerID);
 				view.showMessage(">> 해당 상품을 삭제했습니다.");
 			} else {
@@ -183,11 +190,8 @@ public class FlowerShopController {
 		view.displayCart(cart);
 
 		if (!cart.isEmpty()) {
-			// 도서 ID 입력받기
 			int flowerID = view.selectFlowerID(cart);
-			// 수량 입력 받기
 			int quantity = view.inputNumber(0, flowerStorage.getMaxQuantitiy());
-			// 도서 ID에 해당하는 cartItem 가져옴
 			cart.updateQuantity(flowerID, quantity);
 			view.showMessage(">> 해당 상품의 수량을 변경하였습니다.");
 		}
@@ -205,21 +209,142 @@ public class FlowerShopController {
 		}
 	}
 
-	private Object order() {
-		// TODO Auto-generated method stub
-		return null;
+	private void orderMenu() {
+
+		int menu;
+
+		do {
+
+			menu = view.selectMenuNum(orderMenuList);
+
+			switch (menu) {
+
+			case 1 -> orderInfoUpadate();
+
+			case 2 -> order();
+
+			case 0 -> quit();
+
+			}
+			return;
+
+		} while (menu != 0);
 	}
 
-	private Object adminMode() {
-		// TODO Auto-generated method stub
-		return null;
+	private void order() {
+		if (!cart.isEmpty()) {
+			if (customer.getName() == null) {
+				view.showMessage(">> 주문 정보가 없습니다.");
+				view.inputCustomerInfo(customer);
+			}
+		
+			view.displayDeliveryInfo(cart, customer);
+
+			if (view.askConfirm(">> 주문하려면 \"yes\"를 입력하세요 : ", "yes")) {
+				cart.resetCart();
+				view.showMessage(">> 주문을 완료했습니다.");
+			} else {
+				view.showMessage(">> 주문을 취소했습니다.");
+			}
+		} else {
+			view.displayCart(cart);
+		}
+			
 	}
 
+	private void orderInfoUpadate() {
+		view.inputCustomerInfo(customer);
+	}
+
+	private void adminMode() {
+
+		if (!authenticateAdmin()) {
+			view.showMessage("인증 실패");
+			return;
+		} else {
+			int menu;
+			do {
+				menu = view.selectMenuNum(adminMenuList);
+
+				switch (menu) {
+
+				case 1 -> addFlower2Storage();
+
+				case 2 -> deleteFlowerInStorage();
+
+				case 3 -> saveFlowerList2File();
+
+				case 0 -> adminEnd();
+
+				default -> view.showMessage(">> 잘못된 메뉴 번호입니다.");
+
+				}
+			} while (menu != 0);
+
+		}
+
+	}
+
+	private void addFlower2Storage() {
+		view.showMessage("새로운 꽃을 추가합니다");
+
+		flowerStorage.addBook(view.inputString("종류 : "), view.inputString("상품명 : "), view.inputStringArr("구성 : "), view.inputString("색상 : "), view.inputPrice("가격 : "));
+		
+	
+	}
+
+	private void deleteFlowerInStorage() {
+		
+		
+		if (flowerStorage.isEmpty()) {
+			view.showMessage("꽃 창고에 꽃이 없습니다.");
+			return;
+		}
+		viewFlowerInfo();
+		int flowerID = view.selectFlowerID(flowerStorage);
+			if (view.askConfirm(">> 해당 상품을 삭제하려면 \"yes\"를 입력하세요 : ", "yes")) {
+				flowerStorage.deleteItem(flowerID);
+				view.showMessage(">> 해당 상품를 삭제했습니다.");
+			} else {
+				view.showMessage(">> 해당 상품를 삭제하지 않았습니다.");
+			}
+		
+	}
+
+	private void saveFlowerList2File() {
+		
+		if(flowerStorage.isSaved()) {
+			view.showMessage("저장할 변경사항이 없습니다.");
+		} else {
+			flowerStorage.saveFlowerList2File();
+			view.showMessage("꽃 상품을 저장했습니다.");
+		}
+	}
+
+	private void adminEnd() {
+		view.showMessage("관리자 모드가 종료되었습니다.");
+	}
+
+	private boolean authenticateAdmin() {
+		// 관리자 인증 (id, password)
+		view.showMessage("관리자 모드 진입을 위한 인증");
+
+		String id = view.inputString("관리자 ID : ");
+		String password = view.inputString("관리자 PW : ");
+
+		return admin.login(id, password);
+	}
 	private void quit() {
 
 	}
 
 	private void end() {
 		view.showMessage("🌼 𝑪𝒍𝒐𝒔𝒆 𝒕𝒉𝒆 𝑯𝒂𝒆𝒋𝒖𝒏'𝒔 𝑭𝒍𝒐𝒘𝒆𝒓 𝑺𝒉𝒐𝒑 🌼");
+	}
+	
+	private void viewFlowerInfo() {
+
+		view.displayFlowerInfo(flowerStorage);
+
 	}
 }

@@ -2,8 +2,10 @@ package flowershop.view;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 import flowershop.model.Cart;
+import flowershop.model.Customer;
 import flowershop.model.Flower;
 import flowershop.model.FlowerStorage;
 
@@ -78,7 +80,7 @@ public class ConsoleView {
 		System.out.println("------------------------------------------------------------------------");
 	}
 
-	public int selectFLowerID(FlowerStorage flowerStorage) {
+	public int selectFlowerID(FlowerStorage flowerStorage) {
 		int flowerID;
 		boolean result;
 		do {
@@ -103,6 +105,7 @@ public class ConsoleView {
 		} while (!result);
 		return flowerID;
 	}
+
 	public void showMessage(String message) {
 		System.out.println(message);
 	}
@@ -121,6 +124,16 @@ public class ConsoleView {
 	public void displayFlowerInfo(Flower flower) {
 		System.out.println(flower.toString());
 	}
+	
+	public void displayFlowerInfo(FlowerStorage flowerStorage) {
+		System.out.println("------------------------------------------------------------------------");
+		for (int i = 0; i < flowerStorage.getNumFlowers(); i++) {
+			String bookInfo = flowerStorage.getFlowerInfo(i);
+			System.out.println(bookInfo);
+		}
+		System.out.println("------------------------------------------------------------------------");
+	}
+	
 
 	public int inputNumber(int min, int max) {
 		int number;
@@ -131,6 +144,68 @@ public class ConsoleView {
 				System.out.println(">> 잘못된 수량입니다.");
 		} while (number < min || number > max);
 		return number;
+	}
+
+	public void inputCustomerInfo(Customer customer) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("이름과 전화번호를 입력하세요.");
+		System.out.print(">> 이름 : ");
+		customer.setName(sc.nextLine());
+		System.out.print(">> 전화번호 : ");
+		customer.setPhone(sc.nextLine());
+		System.out.println("주소와 메일을 입력하세요.");
+		System.out.print(">> 주소 : ");
+		customer.setAddress(sc.nextLine());
+		System.out.print(">> 메일 : ");
+		customer.setEmail(sc.nextLine());
+
+	}
+	
+	public void displayDeliveryInfo(Cart cart, Customer customer) {
+
+		System.out.println();
+		System.out.println("***** 주문할 도서 ******");
+		displayCart(cart);
+
+		System.out.println("***** 배송 정보 ******");
+		System.out.println(">> 이름 : " + customer.getName());
+		System.out.println(">> 전화번호 : " + customer.getPhone());
+		System.out.println(">> 이메일 : " + customer.getEmail());
+		System.out.println(">> 주소 : " + customer.getAddress());
+
+	}
+	
+	public String inputString(String message) {
+		Scanner sc = new Scanner(System.in);
+		System.out.print(message);
+		return sc.nextLine();
+	}
+
+	public int inputPrice(String message) {
+		Scanner sc = new Scanner(System.in);
+		System.out.print(message);
+		try {
+			int number = sc.nextInt();
+			return number;
+		} catch (Exception e) {
+			return inputPrice(message);
+		}
+	}
+
+	public String[] inputStringArr(String string) {
+		
+		StringTokenizer st = new StringTokenizer(string, ", ");
+		int token = st.countTokens();
+		
+		String[] compositions = new String[token];
+		
+		for(int i = 0; i < token; i++) {
+			compositions[i] = st.nextToken(); 
+		}
+		
+		return compositions;
+		
+		
 	}
 
 }

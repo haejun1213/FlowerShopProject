@@ -1,7 +1,13 @@
 package flowershop.model;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 public class FlowerStorage {
@@ -12,22 +18,66 @@ public class FlowerStorage {
 
 	final int MAX_QUANTITIY = 10;
 	
+	private String flowerFilename = "flowerlist.txt";
+	
+	private boolean isSaved;
+	
 	ArrayList<Flower> flowerList = new ArrayList<>();
 	
-	private int flowerLastID = 1000;
+	private int flowerLastID;
 	
-	public FlowerStorage() {
-		flowerList.add(new Flower(flowerLastID++, "꽃다발", "flowery fiction - 메리제인", new String[] {"장미"}, "핑크", 64000));
-		flowerList.add(new Flower(flowerLastID++, "꽃다발", "The Roses Bloom - 핑크 하트", new String[] {"장미"}, "핑크", 225000));
-		flowerList.add(new Flower(flowerLastID++, "꽃다발", "Rose & Cozy yellow", new String[] {"장미"}, "노랑", 68000));
-		flowerList.add(new Flower(flowerLastID++, "꽃다발", "Spring violet - 보라빛 봄빛 햇살", new String[] {"장미, 거베라, 스토크"}, "보라", 49000));
-		flowerList.add(new Flower(flowerLastID++, "꽃바구니", "Be my love - Glory", new String[] {"장미"}, "핑크", 63000));
-		flowerList.add(new Flower(flowerLastID++, "꽃바구니", "Lovely sweet II - White blossom", new String[] {"장미"}, "핑크", 240000));
-		flowerList.add(new Flower(flowerLastID++, "꽃화병", "Beautiful colors - innocence", new String[] {"백합"}, "화이트", 135000));
-		flowerList.add(new Flower(flowerLastID++, "꽃화병", "Great Season", new String[] {"아네모네, 씨드유카리"}, "보라", 135000));
-		
+	public FlowerStorage() throws IOException {
+		loadFlowerListFromFile();
+		generateLastId();
 	}
 	
+
+	private void generateLastId() {
+		flowerLastID = 0;
+		for (Flower flower : flowerList) {
+			int id = flower.getFlowerID();
+			if (id > flowerLastID)
+				flowerLastID = id;
+		}
+	}
+
+	private void loadFlowerListFromFile() throws IOException {
+		FileReader fr;
+		try {
+			fr = new FileReader(flowerFilename);
+			BufferedReader br = new BufferedReader(fr);
+			String idStr;
+			while ((idStr = br.readLine()) != null) {
+				int id = Integer.parseInt(idStr);
+				String type = br.readLine();
+				String name = br.readLine();
+				String[] composition = inputStringArr(br.readLine());
+				String color = br.readLine();
+				int price = Integer.parseInt(br.readLine());
+				flowerList.add(new Flower(id, type, name, composition, color, price));
+			}
+			br.close();
+			fr.close();
+		} catch (FileNotFoundException | NumberFormatException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public String[] inputStringArr(String string) {
+		
+		StringTokenizer st = new StringTokenizer(string, ", ");
+		int token = st.countTokens();
+		
+		String[] compositions = new String[token];
+		
+		for(int i = 0; i < token; i++) {
+			compositions[i] = st.nextToken(); 
+		}
+		
+		return compositions;
+	}
+
+
 	//종류
 	public List<Flower> getFlowersByType(int i) {
 		return flowerList.stream()
@@ -76,7 +126,52 @@ public class FlowerStorage {
 	}
 	
 	public int getMaxQuantitiy() {
-		// TODO Auto-generated method stub
 		return MAX_QUANTITIY;
+	}
+	
+	public boolean isEmpty() {
+		return flowerList.size() == 0;
+	}
+	
+	public boolean isSaved() {
+		return isSaved;
+	}
+	
+	public void deleteItem(int bookId) {
+		flowerList.remove(getFlowerID(bookId));
+	}
+	
+	public void addBook(String type, String name, String[] composition, String color, int price) {
+
+		Flower book = new Flower(++flowerLastID, type, name, composition, color, price);
+		flowerList.add(book);
+	}
+	
+	public int getNumFlowers() {
+		return flowerList.size();
+	}
+
+	public String getFlowerInfo(int i) {
+		return flowerList.get(i).toString();
+	}
+	
+	public void saveFlowerList2File() {
+
+		try {
+			FileWriter fw = new FileWriter(flowerFilename);
+			for (Flower flower : flowerList) {
+				fw.write(flower.getFlowerID() + "\n");
+				fw.write(flower.getType() + "\n");
+				fw.write(flower.getName() + "\n");
+				fw.write(flower.getComposition() + "\n");
+				fw.write(flower.getColor() + "\n");
+				fw.write(flower.getPrice() + "\n");
+			}
+			fw.close();
+			isSaved = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
