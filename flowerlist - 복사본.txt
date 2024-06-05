@@ -1,0 +1,49 @@
+1001
+꽃다발
+flowery fiction - 메리제인
+장미
+핑크
+64000
+1002
+꽃다발
+The Roses Bloom - 핑크 하트
+장미
+핑크
+225000
+1003
+꽃다발
+Rose & Cozy yellow
+장미
+노랑
+68000
+1004
+꽃다발
+Spring violet - 보라빛 봄빛 햇살
+장미, 거베라, 스토크
+보라
+49000
+1005
+꽃바구니
+Be my love - Glory
+장미
+핑크
+63000
+1006
+꽃바구니
+Lovely sweet II - White blossom
+장미
+핑크
+240000
+1007
+꽃화병
+Beautiful colors - innocence
+백합
+화이트
+135000
+1008
+꽃화병
+Great Season
+아네모네, 씨드유카리
+보라
+135000
+		
