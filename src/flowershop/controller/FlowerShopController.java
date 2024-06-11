@@ -117,7 +117,7 @@ public class FlowerShopController {
 
 			case 1 -> searchFlowerColor();
 
-			case 2 -> System.out.println("돈보단 마음이 중요합니다.");// searchFlowerPrice();
+			case 2 -> searchFlowerPrice();
 
 			case 0 -> quit();
 			}
@@ -156,10 +156,20 @@ public class FlowerShopController {
 
 		} while (menu != 0);
 	}
+	
+	private void searchFlowerPrice() {
+	    int minPrice = view.inputPrice(">> 최저 가격을 입력하세요: ");
+	    int maxPrice = view.inputPrice(">> 최대 가격을 입력하세요: ");
+	    List<Flower> flowers = flowerStorage.getFlowersByPriceRange(minPrice, maxPrice);
+	    view.displayFlowerList(flowers);
+	    if(flowers.isEmpty())view.showMessage(">> 조건에 맞는 상품이 없습니다.");
+	}
+
 
 	private void viewFlowerInfoColor(int i) {
 		List<Flower> flowers = flowerStorage.getFlowersByColor(i);
 		view.displayFlowerList(flowers);
+		if(flowers.isEmpty())view.showMessage(">> 조건에 맞는 상품이 없습니다.");
 	}
 
 	private void viewCart() {
