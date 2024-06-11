@@ -78,7 +78,7 @@ public class FlowerStorage {
 	}
 
 
-	//종류
+	
 	public List<Flower> getFlowersByType(int i) {
 		return flowerList.stream()
 			.filter(flower -> flower.getType().equals(getTypeMenuList()[i].substring(3, getTypeMenuList()[i].length())))
@@ -90,6 +90,13 @@ public class FlowerStorage {
 			.filter(flower -> flower.getColor().equals(getColorMenuList()[i].substring(3, getColorMenuList()[i].length())))
 			.collect(Collectors.toList());
 	}
+	
+	public List<Flower> getFlowersByPriceRange(int minPrice, int maxPrice) {
+	    return flowerList.stream()
+	        .filter(flower -> flower.getPrice() >= minPrice && flower.getPrice() <= maxPrice)
+	        .collect(Collectors.toList());
+	}
+
 
 	public String[] getTypeMenuList() {
 		return typeMenuList;
