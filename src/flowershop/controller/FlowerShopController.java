@@ -10,16 +10,16 @@ import flowershop.model.FlowerStorage;
 import flowershop.view.ConsoleView;
 
 public class FlowerShopController {
-	
+
 	FlowerStorage flowerStorage;
 	ConsoleView view;
 	Cart cart;
 	Customer customer;
 	Admin admin;
-	
+
 	String[] adminMenuList = { "0. 종료", "1. 꽃 정보 추가", "2. 꽃 정보 삭제", "3. 꽃 정보 파일 저장" };
-	
-	String[] orderMenuList = {"0. 돌아가기", "1. 주문 정보 추가 및 수정", "2. 주문하기"};
+
+	String[] orderMenuList = { "0. 돌아가기", "1. 주문 정보 추가 및 수정", "2. 주문하기" };
 
 	String[] searchMenu = { "0. 돌아가기", "1. 색상 검색", "2. 가격 검색" };
 
@@ -156,20 +156,22 @@ public class FlowerShopController {
 
 		} while (menu != 0);
 	}
-	
-	private void searchFlowerPrice() {
-	    int minPrice = view.inputPrice(">> 최저 가격을 입력하세요: ");
-	    int maxPrice = view.inputPrice(">> 최대 가격을 입력하세요: ");
-	    List<Flower> flowers = flowerStorage.getFlowersByPriceRange(minPrice, maxPrice);
-	    view.displayFlowerList(flowers);
-	    if(flowers.isEmpty())view.showMessage(">> 조건에 맞는 상품이 없습니다.");
-	}
 
+	private void searchFlowerPrice() {
+		view.showMessage("상품들 중 최저 가격 : " + flowerStorage.getMinPrice() + ", 최대 가격 : " + flowerStorage.getMaxPrice());
+		int minPrice = view.inputPrice(">> 최저 가격을 입력하세요: ");
+		int maxPrice = view.inputPrice(">> 최대 가격을 입력하세요: ");
+		List<Flower> flowers = flowerStorage.getFlowersByPriceRange(minPrice, maxPrice);
+		view.displayFlowerList(flowers);
+		if (flowers.isEmpty())
+			view.showMessage(">> 조건에 맞는 상품이 없습니다.");
+	}
 
 	private void viewFlowerInfoColor(int i) {
 		List<Flower> flowers = flowerStorage.getFlowersByColor(i);
 		view.displayFlowerList(flowers);
-		if(flowers.isEmpty())view.showMessage(">> 조건에 맞는 상품이 없습니다.");
+		if (flowers.isEmpty())
+			view.showMessage(">> 조건에 맞는 상품이 없습니다.");
 	}
 
 	private void viewCart() {
@@ -247,7 +249,7 @@ public class FlowerShopController {
 				view.showMessage(">> 주문 정보가 없습니다.");
 				view.inputCustomerInfo(customer);
 			}
-		
+
 			view.displayDeliveryInfo(cart, customer);
 
 			if (view.askConfirm(">> 주문하려면 \"yes\"를 입력하세요 : ", "yes")) {
@@ -259,7 +261,7 @@ public class FlowerShopController {
 		} else {
 			view.displayCart(cart);
 		}
-			
+
 	}
 
 	private void orderInfoUpadate() {
@@ -298,32 +300,31 @@ public class FlowerShopController {
 	private void addFlower2Storage() {
 		view.showMessage("새로운 꽃을 추가합니다");
 
-		flowerStorage.addBook(view.inputString("종류 : "), view.inputString("상품명 : "), view.inputStringArr("구성 : "), view.inputString("색상 : "), view.inputPrice("가격 : "));
-		
-	
+		flowerStorage.addBook(view.inputString("종류 : "), view.inputString("상품명 : "), view.inputStringArr("구성 : "),
+				view.inputString("색상 : "), view.inputPrice("가격 : "));
+
 	}
 
 	private void deleteFlowerInStorage() {
-		
-		
+
 		if (flowerStorage.isEmpty()) {
 			view.showMessage("꽃 창고에 꽃이 없습니다.");
 			return;
 		}
 		viewFlowerInfo();
 		int flowerID = view.selectFlowerID(flowerStorage);
-			if (view.askConfirm(">> 해당 상품을 삭제하려면 \"yes\"를 입력하세요 : ", "yes")) {
-				flowerStorage.deleteItem(flowerID);
-				view.showMessage(">> 해당 상품를 삭제했습니다.");
-			} else {
-				view.showMessage(">> 해당 상품를 삭제하지 않았습니다.");
-			}
-		
+		if (view.askConfirm(">> 해당 상품을 삭제하려면 \"yes\"를 입력하세요 : ", "yes")) {
+			flowerStorage.deleteItem(flowerID);
+			view.showMessage(">> 해당 상품를 삭제했습니다.");
+		} else {
+			view.showMessage(">> 해당 상품를 삭제하지 않았습니다.");
+		}
+
 	}
 
 	private void saveFlowerList2File() {
-		
-		if(flowerStorage.isSaved()) {
+
+		if (flowerStorage.isSaved()) {
 			view.showMessage("저장할 변경사항이 없습니다.");
 		} else {
 			flowerStorage.saveFlowerList2File();
@@ -344,6 +345,7 @@ public class FlowerShopController {
 
 		return admin.login(id, password);
 	}
+
 	private void quit() {
 
 	}
@@ -351,7 +353,7 @@ public class FlowerShopController {
 	private void end() {
 		view.showMessage("🌼 𝑪𝒍𝒐𝒔𝒆 𝒕𝒉𝒆 𝑯𝒂𝒆𝒋𝒖𝒏'𝒔 𝑭𝒍𝒐𝒘𝒆𝒓 𝑺𝒉𝒐𝒑 🌼");
 	}
-	
+
 	private void viewFlowerInfo() {
 
 		view.displayFlowerInfo(flowerStorage);
