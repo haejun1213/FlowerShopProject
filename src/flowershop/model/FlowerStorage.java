@@ -96,6 +96,35 @@ public class FlowerStorage {
 	        .filter(flower -> flower.getPrice() >= minPrice && flower.getPrice() <= maxPrice)
 	        .collect(Collectors.toList());
 	}
+	
+	public String getMinPrice() {
+	    if (flowerList.isEmpty()) {
+	        return "0";
+	    }
+
+	    int minPrice = Integer.MAX_VALUE;
+	    for (Flower flower : flowerList) {
+	        if (flower.getPrice() < minPrice) {
+	            minPrice = flower.getPrice();
+	        }
+	    }
+	    return String.valueOf(minPrice);
+	}
+
+	
+	public String getMaxPrice() {
+	    if (flowerList.isEmpty()) {
+	        return "0";
+	    }
+
+	    int maxPrice = Integer.MIN_VALUE;
+	    for (Flower flower : flowerList) {
+	        if (flower.getPrice() > maxPrice) {
+	            maxPrice = flower.getPrice();
+	        }
+	    }
+	    return String.valueOf(maxPrice);
+	}
 
 
 	public String[] getTypeMenuList() {
