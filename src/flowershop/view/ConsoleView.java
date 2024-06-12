@@ -135,7 +135,7 @@ public class ConsoleView {
 	}
 	
 
-	public int inputNumber(int min, int max) {
+	public int inputNumberMinMax(int min, int max) {
 		int number;
 		do {
 			System.out.print(">> 수량 입력 (" + min + " ~ " + max + "): ");
@@ -192,9 +192,10 @@ public class ConsoleView {
 		}
 	}
 
-	public String[] inputStringArr(String string) {
-		
-		StringTokenizer st = new StringTokenizer(string, ", ");
+	public String[] inputStringArr(String message) {
+		System.out.print(message);
+		Scanner sc = new Scanner(System.in);
+		StringTokenizer st = new StringTokenizer(sc.nextLine(), ", ");
 		int token = st.countTokens();
 		
 		String[] compositions = new String[token];
@@ -209,3 +210,5 @@ public class ConsoleView {
 	}
 
 }
+
+
