@@ -177,7 +177,7 @@ public class FlowerStorage {
 		flowerList.remove(getFlowerID(bookId));
 	}
 	
-	public void addBook(String type, String name, String[] composition, String color, int price) {
+	public void addFlower(String type, String name, String[] composition, String color, int price) {
 
 		Flower book = new Flower(++flowerLastID, type, name, composition, color, price);
 		flowerList.add(book);
@@ -199,7 +199,7 @@ public class FlowerStorage {
 				fw.write(flower.getFlowerID() + "\n");
 				fw.write(flower.getType() + "\n");
 				fw.write(flower.getName() + "\n");
-				fw.write(flower.getComposition() + "\n");
+				fw.write(flower.getComposition().substring(1, flower.getComposition().length() - 1) + "\n");
 				fw.write(flower.getColor() + "\n");
 				fw.write(flower.getPrice() + "\n");
 			}
