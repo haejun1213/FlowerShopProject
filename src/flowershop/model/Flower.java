@@ -1,5 +1,7 @@
 package flowershop.model;
 
+import java.util.Arrays;
+
 public class Flower {
 
 	private int flowerID;
@@ -50,8 +52,10 @@ public class Flower {
 		this.price = price;
 	}
 
-	public String[] getComposition() {
-		return composition;
+	public String getComposition() {
+		String str = Arrays.toString(composition);
+		
+		return str;
 	}
 
 	public void setComposition(String[] composition) {
@@ -66,8 +70,8 @@ public class Flower {
 		this.color = color;
 	}
 
-
 	public String toString() {
-		return getFlowerID() + ", " + getType() + ", " + getName() + ", " + getColor() + ", " + getPrice() + "원";
-}
+		return getFlowerID() + ", " + getType() + ", " + getName() + ", " + getColor() + ", "
+				+ getComposition() + ", " + getPrice() + "원";
+	}
 }
