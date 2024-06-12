@@ -203,7 +203,7 @@ public class FlowerShopController {
 
 		if (!cart.isEmpty()) {
 			int flowerID = view.selectFlowerID(cart);
-			int quantity = view.inputNumber(0, flowerStorage.getMaxQuantitiy());
+			int quantity = view.inputNumberMinMax(0, flowerStorage.getMaxQuantitiy());
 			cart.updateQuantity(flowerID, quantity);
 			view.showMessage(">> 해당 상품의 수량을 변경하였습니다.");
 		}
@@ -300,7 +300,7 @@ public class FlowerShopController {
 	private void addFlower2Storage() {
 		view.showMessage("새로운 꽃을 추가합니다");
 
-		flowerStorage.addBook(view.inputString("종류 : "), view.inputString("상품명 : "), view.inputStringArr("구성 : "),
+		flowerStorage.addFlower(view.inputString("종류 : "), view.inputString("상품명 : "), view.inputStringArr("구성 : "),
 				view.inputString("색상 : "), view.inputPrice("가격 : "));
 
 	}
